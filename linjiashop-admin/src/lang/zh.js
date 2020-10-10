@@ -38,7 +38,9 @@ export default {
     promotion:'推广管理',
     topic:'专题管理',
     favorite:'收藏列表',
-    express:'物流公司'
+    express:'物流公司',
+    covid:'新冠肺炎',
+    country:'国家病例分布'
   },
   navbar: {
     logOut: '退出登录',
@@ -51,7 +53,7 @@ export default {
     size: '布局大小'
   },
   login: {
-    title: '邻家小铺',
+    title: '商业赋能',
     errorAccount:'请输入5到32位的数字和字母',
     errorPassword:'密码至少位5位',
     logIn: '登录',
@@ -71,7 +73,10 @@ export default {
     clear: '清除',
     back: '返回',
     export: '导出',
-    refresh:'刷新'
+    refresh:'刷新',
+    printer:'打印预览',
+    order:'下单打印',
+    download:'下载'
   },
   common: {
     mustSelectOne: '请选中操作项!',
