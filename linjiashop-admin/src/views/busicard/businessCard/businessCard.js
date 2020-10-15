@@ -35,8 +35,6 @@ export default {
       total: 0,
       list: null,
       listLoading: true,
-      imgUrlFront:null,
-      imgUrlBack:null,
       selRow: {}
     }
   },
@@ -179,43 +177,43 @@ export default {
       }
     },
     downloadBusinessCard(){
+      var imgUrlFront;
+      var imgUrlBack;
       html2canvas(this.$refs.captureFront,{
         scale: 3,//图片放大3倍,解决图片模糊问题
         useCORS   : true,// 允许使用跨域图片
         allowTaint: false// 不允许跨域图片污染画布
       }).then(canvas => {
         // 转成图片，生成图片地址
-        this.imgUrlFront = canvas.toDataURL("image/png");
-        //console.log(this.imgUrlFront)
+        imgUrlFront = canvas.toDataURL("image/png");
         //this.download(this.imgUrl,"名片正面")
+        html2canvas(this.$refs.captureBack,{
+          scale: 3,//图片放大3倍,解决图片模糊问题
+          useCORS   : true,// 允许使用跨域图片
+          allowTaint: false// 不允许跨域图片污染画布
+        }).then(canvas => {
+          // 转成图片，生成图片地址
+          imgUrlBack = canvas.toDataURL("image/png");
+          this.downloadZip(imgUrlFront,imgUrlBack);
+        });
       });
-      html2canvas(this.$refs.captureBack,{
-        scale: 3,//图片放大3倍,解决图片模糊问题
-        useCORS   : true,// 允许使用跨域图片
-        allowTaint: false// 不允许跨域图片污染画布
-      }).then(canvas => {
-        // 转成图片，生成图片地址
-        this.imgUrlBack = canvas.toDataURL("image/png");
-        //console.log(this.imgUrlBack)
 
-        //this.download(this.imgUrl,"名片反面")
-      });
-      this.downloadZip(this.imgUrlFront,this.imgUrlBack);
     },
-    downloadZip (frontUrl,backUrl) {
+    downloadZip (imgUrlFront,imgUrlBack) {
       var zip = new JSZip();
       //新增ReadMe文件
       zip.file("ReadMe.txt", "商嘉网：https://busibetter.com/\n");
       // 创建images文件夹
       var imgFolder = zip.folder("images");
-      let arr = [frontUrl,
-        backUrl
+      let arr = [imgUrlFront,
+        imgUrlBack
       ];
       let flag = 0 //  判断加载了几张图片的标识
       for (let i = 0;i < arr.length;i++) {
         getBase64(arr[i]).then(function(base64){
           base64 = base64.split('base64,')[1]
           imgFolder.file(i + '.png', base64, { base64: true })
+          //imgFolder.file(i + '.png', base64, { base64: true })
           if (flag === arr.length - 1) {
             zip.generateAsync({ type: "blob" }).then((blob) => {
               saveAs(blob, "我的名片.zip")
@@ -224,6 +222,8 @@ export default {
           flag++
         },function(err){
           console.log(err);//打印异常信息
+          //设定时间后只执行函数一次
+          //setTimeout(this.downloadZip (frontUrl,backUrl), 1000)
         });
       }
       function getBase64(img){

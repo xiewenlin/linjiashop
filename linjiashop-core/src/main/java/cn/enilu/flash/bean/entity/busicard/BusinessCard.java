@@ -15,7 +15,7 @@ import javax.persistence.Entity;
  **/
 @Data
 @Entity(name="t_business_card")
-@Table(appliesTo = "t_business_card",comment = "名片设计")
+@Table(appliesTo = "t_business_card",comment = "我的名片")
 public class BusinessCard extends BaseEntity {
     private  Long  id;  //主键ID
     @Column(columnDefinition = "VARCHAR(64) COMMENT '姓名'")
@@ -38,8 +38,17 @@ public class BusinessCard extends BaseEntity {
     private  String  qrcode;  //二维码
     @Column(columnDefinition = "VARCHAR(200) COMMENT '备注'")
     private  String  memo;  //备注
-    @Column(columnDefinition = "VARCHAR(64) COMMENT '用户ID'")
+    @Column(columnDefinition = "BIGINT COMMENT '用户ID'")
     private  Long  userid;  //用户ID
-    @Column(columnDefinition = "VARCHAR(64) COMMENT '公司ID'")
+    @Column(columnDefinition = "BIGINT COMMENT '公司ID'")
     private  Long  orgid;  //公司ID
+    /*@Column(name="template_id",columnDefinition = "VARCHAR(64) COMMENT '模板ID'")
+    private  Long templateId;  //模板ID
+    @Column(name="template_content",columnDefinition = "TEXT COMMENT '模板内容'")
+    private String templateContent;//模板内容
+    @Column(columnDefinition = "VARCHAR(500) COMMENT '公司logo'")
+    private  String  logo;  //公司logo*/
+
+
+
 }

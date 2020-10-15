@@ -11,7 +11,6 @@
             </el-row>
         </div>
 
-
         <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row
                   @current-change="handleCurrentChange">
             <el-table-column label="姓名">
@@ -49,7 +48,7 @@
                     {{scope.row.position}}
                 </template>
             </el-table-column>
-            <el-table-column label="我能提供的价值">
+            <el-table-column label="业务介绍">
                 <template slot-scope="scope">
                     {{scope.row.description}}
                 </template>

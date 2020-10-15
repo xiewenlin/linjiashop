@@ -38,9 +38,7 @@ export default {
     promotion:'推广管理',
     topic:'专题管理',
     favorite:'收藏列表',
-    express:'物流公司',
-    covid:'新冠肺炎',
-    country:'国家病例分布'
+    express:'物流公司'
   },
   navbar: {
     logOut: '退出登录',
