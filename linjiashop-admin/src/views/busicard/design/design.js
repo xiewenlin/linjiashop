@@ -10,6 +10,7 @@ import html2canvas from 'html2canvas'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver';
 import $ from 'jquery'
+import variables from '@/styles/common.scss'
 
 export default {
   components: {editorImage},
@@ -23,17 +24,52 @@ export default {
     },
   data() {
     return {
-      mockList:[
+      tempList:[
         {
-
+          id:1,
+          tempName:"蓝色经典",
+          tempDesc:"官方推荐蓝色系模板",
+          preFrontImageUrl:"https://i.loli.net/2020/10/16/VYBjiOyL6cWksAR.jpg",
+          preBackImageUrl:"https://i.loli.net/2020/10/16/i2eCK14L6QvTlZw.jpg",
+          frontImageUrl:"https://i.loli.net/2020/10/15/C5fXe31H6AtlkI9.jpg",
+          frontTextColor:"#7580c6",
+          frontLocationStyle:"1",
+          backImageUrl:"https://i.loli.net/2020/10/15/EPRloSeVsidbDHh.jpg",
+          backTextColor:"#FFFFFF",
+          backLocationStyle:"1",
+          tempTag:"简洁,商务，蓝色",
+          templateIndustry:"互联网",
+          recommend:"0",
+          stars:4.5,
+          tempCode:"保留选项",
+          temp_price:"0",
+          srcFlag: true
         },
         {
-
+          id:2,
+          tempName:"绿色经典",
+          tempDesc:"官方推荐绿色系模板",
+          preFrontImageUrl:"https://i.loli.net/2020/10/16/tjNM1TCpHVG2l9Q.png",
+          preBackImageUrl:"https://i.loli.net/2020/10/16/i7dhF4BCM9VlEpP.png",
+          frontImageUrl:"https://i.loli.net/2020/10/15/AqvwkVUh7sB8tNL.jpg",
+          frontTextColor:"#3f938b",
+          frontLocationStyle:"1",
+          backImageUrl:"https://i.loli.net/2020/10/15/bTN5ekVp8sPCGdW.jpg",
+          backTextColor:"#FFFFFF",
+          backLocationStyle:"1",
+          tempTag:"简洁,商务，蓝色",
+          templateIndustry:"互联网",
+          recommend:"0",
+          stars:4.5,
+          tempCode:"保留选项",
+          temp_price:"0",
+          srcFlag: true
         }
       ],
       radio: '0',
+      listLoading: true,
+      selRow: {},
       textarea:"",
-      startValue: 4.5,
       stars:0,
       search: "", //当前输入框的值
       isFocus: false, //是否聚焦
@@ -107,7 +143,10 @@ export default {
     },
     isSearch() {
       return this.isFocus;
-    }
+    }/*,
+    variables() {
+      return variables;
+    }*/
   },
   mounted() {
     this.init()
@@ -119,7 +158,17 @@ export default {
       this.idGoods = this.$route.query.id
       this.fetchData()*/
     },
-    downloadBusinessCard(){
+    /*handleCurrentChange(currentRow, oldCurrentRow) {
+      this.selRow = currentRow
+    },*/
+      radioOption(item){
+        this.selRow=item;
+        /*this.variables.primaryFrontColor=item.frontTextColor;
+        this.variables.primaryBackColor=item.backTextColor;*/
+        document.getElementsByTagName('body')[0].style.setProperty('--primaryFrontColor', item.frontTextColor);
+        document.getElementsByTagName('body')[0].style.setProperty('--primaryBackColor', item.backTextColor);
+      },
+      downloadBusinessCard(){
       var imgUrlFront;
       var imgUrlBack;
       html2canvas(this.$refs.captureFront,{

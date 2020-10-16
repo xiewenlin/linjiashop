@@ -79,25 +79,26 @@
       </div>
       <div>
         <el-row>
-          <el-col :span="8" v-for="(o, index) in 9" :key="o" :offset="0">
+          <el-col :span="8" :data="tempList" v-for="(item, index) in tempList" :key="item.id">
             <el-card :body-style="{ padding: '30px' }">
-              <img :src="src" class="image">
+              <!--<i class="el-icon-s-opportunity">点击图片切换正反面</i>-->
+               <img @click="item.srcFlag=!item.srcFlag" :src="item.srcFlag?item.preFrontImageUrl:item.preBackImageUrl"  class="image">
               <div style="padding: 10px;">
-                <span>名片精选</span>
+                <span>{{item.tempName}}</span>
                 <div class="bottom clearfix">
                   <el-row>
-                    <el-col :span="18"><time class="time">这里填写描述说明文字</time>
+                    <template>
+                    <el-col :span="18"><time class="time">{{item.tempDesc}}</time>
                       <el-rate
-                        v-model="startValue"
+                        v-model="item.stars"
                         disabled
                         show-score
                         text-color="#ff9900"
                       >
-                      </el-rate></el-col>
-                    <el-col :span="6"><el-radio v-model="radio" label="1">请选择</el-radio></el-col>
+                      </el-rate></el-col><!--@click="radioOption(item.radio,index)"-->
+                    <el-col :span="6"><el-radio @click.native="radioOption(item)"  v-model="radio" :label="item.id">请选择</el-radio></el-col>
+                    </template>
                   </el-row>
-
-
                 </div>
               </div>
             </el-card><br>
@@ -187,11 +188,11 @@
         <!--<el-image :src="imgUrl"></el-image>-->
         <div class="display-flex">
           <div ref="captureFront">
-            <img src="./green_front.jpg" id="green_front" class="gwd-img-1ipa"><span class="gwd-span-18vz">{{form.company}}</span><span class="gwd-span-z6x2">{{form.name}}</span>
+            <img :src="selRow.frontImageUrl" id="green_front" class="gwd-img-1ipa"><span class="gwd-span-18vz">{{form.company}}</span><span class="gwd-span-z6x2">{{form.name}}</span>
             <p class="gwd-span-1pxk">{{form.position}}</p><span class="gwd-span-bhnv">{{form.email}}</span><span class="gwd-span-1maf">{{form.phone}}</span><span class="gwd-span-7w50">{{form.address}}</span><span class="gwd-span-12za">{{form.website}}</span>
           </div>
           <div ref="captureBack" class="margin-set">
-            <img src="./green_back.jpg" id="green_back" class="gwd-img-1ipa">
+            <img :src="selRow.backImageUrl" id="green_back" class="gwd-img-1ipa">
             <el-image :src="form.qrcode" id="qrcode" class="gwd-img-mt5w"></el-image>
             <p class="gwd-p-1k6l gwd-p-xsa5">业务介绍</p>
             <!--<p class="gwd-p-1k6l gwd-p-91fv">介绍</p>-->
@@ -211,8 +212,7 @@
             <el-radio class="radio" v-model="spec" label="2" >Pvc名片材质</el-radio>
             <el-radio class="radio" v-model="spec" label="3">冰白纸</el-radio>
             <el-radio class="radio" v-model="spec" label="4" >布纹纸</el-radio>
-            <el-radio class="radio" v-m
-                      odel="spec" label="5">炫银纸</el-radio>
+            <el-radio class="radio" v-model="spec" label="5">炫银纸</el-radio>
             <el-radio class="radio" v-model="spec" label="6" >荷兰白卡纸</el-radio>
             <el-radio class="radio" v-model="spec" label="7">丽芙纸</el-radio>
             <el-radio class="radio" v-model="spec" label="8" >哑粉纸</el-radio>
@@ -376,6 +376,10 @@
 </style>
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "src/styles/common.scss";
+
+  $primary-front-color: var(--primaryFrontColor,#3f938b);//#3f938b;
+  $primary-back-color: var(--primaryBackColor,#FFFFFF);//#FFFFFF;
+
   .image {
     width: 94mm;
     hight:54mm;
@@ -402,8 +406,7 @@
   .margin-set{
     margin-left: 2.5%;
   }
-</style>
-<style type="text/css">
+
   html, body {
     width: 100%;
     height: 100%;
@@ -421,7 +424,7 @@
   .gwd-span-18vz {
     position: absolute;
     font-weight: bold;
-    color: rgb(63, 147, 139);
+    color: $primary-front-color;
     transform-origin: 50% 50% 0px;
     left: 16%;
     top: 38.84%;
@@ -433,7 +436,7 @@
     position: absolute;
     transform-origin: 50% 50% 0px;
     font-weight: bold;
-    color: rgb(63, 147, 139);
+    color: $primary-front-color;
     left: 17%;
     top: 46.05%;
     font-size: 23px;
@@ -444,7 +447,7 @@
     position: absolute;
     font-weight: bold;
     font-size: 15px;
-    color: rgb(63, 147, 139);
+    color: $primary-front-color;
     width: 11%;
     height: 4%;
     left: 23.6%;
@@ -453,7 +456,7 @@
   .gwd-span-bhnv {
     position: absolute;
     font-weight: bold;
-    color: rgb(63, 147, 139);
+    color: $primary-front-color;
     left: 35.9%;
     top: 38.42%;
     font-size: 13px;
@@ -464,7 +467,7 @@
     position: absolute;
     transform-origin: 50% 50% 0px;
     font-weight: bold;
-    color: rgb(63, 147, 139);
+    color: $primary-front-color;
     left: 35.9%;
     top: 42.40%;
     font-size: 13px;
@@ -475,7 +478,7 @@
     position: absolute;
     transform-origin: 50% 50% 0px;
     font-weight: bold;
-    color: rgb(63, 147, 139);
+    color: $primary-front-color;
     transform-style: preserve-3d;
     left: 35.9%;
     top: 45.5%;
@@ -487,7 +490,7 @@
     position: absolute;
     transform-origin: 50% 50% 0px;
     font-weight: bold;
-    color: rgb(63, 147, 139);
+    color: $primary-front-color;
     transform-style: preserve-3d;
     left: 35.9%;
     top: 50.5%;
@@ -512,11 +515,11 @@
     top: 124px;
     font-size: 22px;
     font-weight: bold;
-    color: rgb(255, 255, 255);
+    color: $primary-back-color;
   }
   .gwd-p-1yzs {
     position: absolute;
-    color: rgb(255, 255, 255);
+    color: $primary-back-color;
     font-weight: bold;
     font-size: 16px;
     text-align: justify;
@@ -526,13 +529,15 @@
     transform-style: preserve-3d;
     transform: translate3d(-7px, -2px, 0px) rotateZ(-0.845633deg);
   }
- /* .gwd-p-91fv {
-    top: 39.8%;
-    left: 70.5%;
-  }*/
+  /* .gwd-p-91fv {
+     top: 39.8%;
+     left: 70.5%;
+   }*/
   .gwd-p-xsa5 {
     top: 39.8%;
     left: 64.2%;
     width: 30%;
   }
+
 </style>
+
