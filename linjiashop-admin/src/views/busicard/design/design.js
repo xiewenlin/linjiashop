@@ -1,7 +1,4 @@
 import editorImage from '@/components/Tinymce'
-import goodsApi from '@/api/shop/goods'
-import attrValApi from '@/api/shop/attrVal'
-import categoryApi from '@/api/shop/category'
 import {getApiUrl} from '@/utils/utils'
 import {getToken} from '@/utils/auth'
 import Store from "../../../utils/store";
@@ -10,7 +7,8 @@ import html2canvas from 'html2canvas'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver';
 import $ from 'jquery'
-import variables from '@/styles/common.scss'
+import { remove, getList, save } from '@/api/busicard/tempMarket'
+
 
 export default {
   components: {editorImage},
@@ -25,7 +23,7 @@ export default {
   data() {
     return {
       tempList:[
-        {
+        /*{
           id:1,
           tempName:"蓝色经典",
           tempDesc:"官方推荐蓝色系模板",
@@ -64,7 +62,7 @@ export default {
           tempCode:"保留选项",
           temp_price:"0",
           srcFlag: true
-        }
+        }*/
       ],
       radio: '0',
       listLoading: true,
@@ -155,8 +153,8 @@ export default {
     init() {
       /*this.uploadUrl = getApiUrl() + '/file'
       this.uploadHeaders['Authorization'] = getToken()
-      this.idGoods = this.$route.query.id
-      this.fetchData()*/
+      this.idGoods = this.$route.query.id*/
+      this.fetchData()
     },
     /*handleCurrentChange(currentRow, oldCurrentRow) {
       this.selRow = currentRow
@@ -286,35 +284,14 @@ export default {
     removeAllHistory() {
       Store.removeAllHistory();
     },
-    /*fetchData() {
+    fetchData() {
       this.listLoading = true
-      if(this.idGoods) {
-        goodsApi.get(this.idGoods).then(response => {
-          this.form = response.data.goods
-          this.idGoods = this.form.id
-          this.skuList = response.data.skuList
-          this.spec = this.skuList.length>0?'more':'one'
-          let galleryArr =this.form .gallery.split(',')
-          for (let i = 0; i < galleryArr.length; i++) {
-            if (galleryArr[i] != '') {
-              this.galleryList.push({
-                id: galleryArr[i],
-                url: this.apiUrl + '/file/getImgStream?idFile=' + galleryArr[i]
-              })
-            }
-          }
-          this.setContent(this.form.detail)
-          attrValApi.getAttrBy(this.form.idCategory).then(response2 => {
-            this.attrKeyList = response2.data.keyList
-            this.attrValList = response2.data.valList
-          })
-        })
-
-      }
-      categoryApi.getCategories().then(response => {
-        this.categories = response.data
+      getList(this.listQuery).then(response => {
+        this.tempList = response.data.records
+        this.listLoading = false
+        this.total = response.data.total
       })
-    },*/
+    },
     prev() {
       if (this.active > 0) {
         this.active -= 1

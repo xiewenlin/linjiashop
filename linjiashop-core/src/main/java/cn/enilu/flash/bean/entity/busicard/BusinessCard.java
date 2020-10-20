@@ -32,7 +32,7 @@ public class BusinessCard extends BaseEntity {
     private  String  website;  //网址
     @Column(columnDefinition = "VARCHAR(64) COMMENT '职位'")
     private  String  position;  //职位
-    @Column(columnDefinition = "VARCHAR(5000) COMMENT '我能提供的价值'")
+    @Column(columnDefinition = "VARCHAR(5000) COMMENT '业务介绍'")
     private  String  description;  //我能提供的价值
     @Column(columnDefinition = "VARCHAR(500) COMMENT '二维码'")
     private  String  qrcode;  //二维码
@@ -42,12 +42,12 @@ public class BusinessCard extends BaseEntity {
     private  Long  userid;  //用户ID
     @Column(columnDefinition = "BIGINT COMMENT '公司ID'")
     private  Long  orgid;  //公司ID
-    /*@Column(name="template_id",columnDefinition = "VARCHAR(64) COMMENT '模板ID'")
+    @Column(name="template_id",columnDefinition = "VARCHAR(64) COMMENT '模板ID'")
     private  Long templateId;  //模板ID
     @Column(name="template_content",columnDefinition = "TEXT COMMENT '模板内容'")
     private String templateContent;//模板内容
     @Column(columnDefinition = "VARCHAR(500) COMMENT '公司logo'")
-    private  String  logo;  //公司logo*/
+    private  String  logo;  //公司logo
 
 
 

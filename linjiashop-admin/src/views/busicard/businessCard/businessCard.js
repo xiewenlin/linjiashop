@@ -13,6 +13,7 @@ export default {
       formVisible: false,
       formTitle: '添加名片设计',
       isAdd: true,
+      userid:'',
       form: {
         name:'',
         company:'',
@@ -61,6 +62,7 @@ export default {
   },
   created() {
     this.init()
+
   },
   methods: {
     init() {
@@ -72,6 +74,7 @@ export default {
         this.list = response.data.records
         this.listLoading = false
         this.total = response.data.total
+        this.userid=response.data.filters[0].value
       })
     },
     search() {
@@ -125,6 +128,7 @@ export default {
     },
     add() {
       this.resetForm()
+      this.form.userid=this.userid;
       this.formTitle = '添加名片设计',
       this.formVisible = true
       this.isAdd = true

@@ -48,12 +48,12 @@
                     {{scope.row.position}}
                 </template>
             </el-table-column>
-            <el-table-column label="业务介绍">
+            <el-table-column :show-overflow-tooltip="true" label="业务介绍">
                 <template slot-scope="scope">
                     {{scope.row.description}}
                 </template>
             </el-table-column>
-            <el-table-column label="二维码">
+            <el-table-column :show-overflow-tooltip="true" label="二维码">
                 <template slot-scope="scope">
                     {{scope.row.qrcode}}
                 </template>
