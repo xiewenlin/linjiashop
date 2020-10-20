@@ -44,7 +44,7 @@ public class TempMarket  extends BaseEntity {
     @Column(columnDefinition = "VARCHAR(50) COMMENT '是否推荐'")
     private  String  recommend;
     @Column(columnDefinition = "VARCHAR(50) COMMENT '星级'")
-    private  String  stars;
+    private  float  stars;
     @Column(name="temp_code",columnDefinition = "TEXT COMMENT '模板代码'")
     private  String  tempCode;
     @Column(name="temp_price",columnDefinition = "VARCHAR(50) COMMENT '价格'")

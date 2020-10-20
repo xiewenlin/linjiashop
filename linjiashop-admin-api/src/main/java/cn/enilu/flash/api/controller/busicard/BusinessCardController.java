@@ -42,12 +42,18 @@ public class BusinessCardController extends BaseController {
 	@RequestMapping(method = RequestMethod.POST)
 	@BussinessLog(value = "编辑名片设计", key = "name")
 	public Object save(@ModelAttribute BusinessCard businessCard){
+		if(null==businessCard.getUserid()||StringUtil.isEmpty(businessCard.getUserid())){
+			HttpServletRequest request = HttpUtil.getRequest();
+			Long idUser = getIdUser(request);
+			businessCard.setUserid(idUser);
+		}
+
 		if(businessCard.getId()==null){
 			businessCardService.insert(businessCard);
 		}else {
 			businessCardService.update(businessCard);
 		}
-		return Rets.success();
+		return Rets.success(businessCard);
 	}
 	@RequestMapping(method = RequestMethod.DELETE)
 	@BussinessLog(value = "删除名片设计", key = "id")

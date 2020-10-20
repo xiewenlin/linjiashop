@@ -7,8 +7,8 @@ import html2canvas from 'html2canvas'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver';
 import $ from 'jquery'
-import { remove, getList, save } from '@/api/busicard/tempMarket'
-
+import { remove, getList ,save as saveTempMarket} from '@/api/busicard/tempMarket'
+import { save as saveBusinessCard} from '@/api/busicard/businessCard'
 
 export default {
   components: {editorImage},
@@ -23,47 +23,12 @@ export default {
   data() {
     return {
       tempList:[
-        /*{
-          id:1,
-          tempName:"蓝色经典",
-          tempDesc:"官方推荐蓝色系模板",
-          preFrontImageUrl:"https://i.loli.net/2020/10/16/VYBjiOyL6cWksAR.jpg",
-          preBackImageUrl:"https://i.loli.net/2020/10/16/i2eCK14L6QvTlZw.jpg",
-          frontImageUrl:"https://i.loli.net/2020/10/15/C5fXe31H6AtlkI9.jpg",
-          frontTextColor:"#7580c6",
-          frontLocationStyle:"1",
-          backImageUrl:"https://i.loli.net/2020/10/15/EPRloSeVsidbDHh.jpg",
-          backTextColor:"#FFFFFF",
-          backLocationStyle:"1",
-          tempTag:"简洁,商务，蓝色",
-          templateIndustry:"互联网",
-          recommend:"0",
-          stars:4.5,
-          tempCode:"保留选项",
-          temp_price:"0",
-          srcFlag: true
-        },
-        {
-          id:2,
-          tempName:"绿色经典",
-          tempDesc:"官方推荐绿色系模板",
-          preFrontImageUrl:"https://i.loli.net/2020/10/16/tjNM1TCpHVG2l9Q.png",
-          preBackImageUrl:"https://i.loli.net/2020/10/16/i7dhF4BCM9VlEpP.png",
-          frontImageUrl:"https://i.loli.net/2020/10/15/AqvwkVUh7sB8tNL.jpg",
-          frontTextColor:"#3f938b",
-          frontLocationStyle:"1",
-          backImageUrl:"https://i.loli.net/2020/10/15/bTN5ekVp8sPCGdW.jpg",
-          backTextColor:"#FFFFFF",
-          backLocationStyle:"1",
-          tempTag:"简洁,商务，蓝色",
-          templateIndustry:"互联网",
-          recommend:"0",
-          stars:4.5,
-          tempCode:"保留选项",
-          temp_price:"0",
-          srcFlag: true
-        }*/
       ],
+      listQuery: {
+        page: 1,
+        limit: 20,
+        id: undefined
+      },
       radio: '0',
       listLoading: true,
       selRow: {},
@@ -102,8 +67,7 @@ export default {
         description:'几分钟制作一个网站，完全免费；在线极速制作名片，直接下单打印；企业融资贷款，省时省力；企业服务采购，满足多样性需求。',
         qrcode:'https://i.loli.net/2020/10/10/zRfneiAgoPwxUD2.jpg',
         memo:'这是备注内容，哈哈。',
-        userid:'4',
-        id: '1'
+        id:null
       },
       orderForm: {
         number:200,
@@ -144,7 +108,16 @@ export default {
     }/*,
     variables() {
       return variables;
-    }*/
+    }*/,
+    //表单验证
+    rules() {
+      return {
+        // cfgName: [
+        //   { required: true, message: this.$t('config.name') + this.$t('common.isRequired'), trigger: 'blur' },
+        //   { min: 3, max: 2000, message: this.$t('config.name') + this.$t('config.lengthValidation'), trigger: 'blur' }
+        // ]
+      }
+    }
   },
   mounted() {
     this.init()
@@ -159,6 +132,10 @@ export default {
     /*handleCurrentChange(currentRow, oldCurrentRow) {
       this.selRow = currentRow
     },*/
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getList()
+    },
       radioOption(item){
         this.selRow=item;
         /*this.variables.primaryFrontColor=item.frontTextColor;
@@ -290,6 +267,7 @@ export default {
         this.tempList = response.data.records
         this.listLoading = false
         this.total = response.data.total
+        //this.userid=response.data.filters[0].value
       })
     },
     prev() {
@@ -301,28 +279,40 @@ export default {
 
       if(this.active == 0 ){
         //操作说明：1.验证用户选择；2.保存用户数据并给待用的变量赋值
-     /*   if(this.form.name === '' ||
-          this.form.idCategory === '' ||
-          this.form.descript === ''){
+        if(this.radio=='0'){
           this.$message({
-            message: '请输入必要的商品项目',
+            message: '请选择一个必要的模板再点“下一步”',
             type: 'error'
           })
           return
         }
-        goodsApi.saveBaseInfo({
-          name: this.form.name,
-          idCategory: this.form.idCategory,
-          descript: this.form.descript,
-          isNew: this.form.isNew,
-          isHot:this.form.isHot
-        }).then( response => {
-          this.idGoods = response.data
+
+      }
+
+      if(this.active==1){
+        //保存名片基本信息
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            saveBusinessCard({
+              name:this.form.name,
+              company:this.form.company,
+              phone:this.form.phone,
+              email:this.form.email,
+              address:this.form.address,
+              website:this.form.website,
+              position:this.form.position,
+              description:this.form.description,
+              qrcode:this.form.qrcode,
+              memo:this.form.memo,
+              templateId:this.selRow.id,
+              id:this.form.id
+            }).then(response => {
+              this.form.id=response.data.id;
+            })
+          } else {
+            return false
+          }
         })
-        attrValApi.getAttrBy(this.form.idCategory).then(response2 => {
-          this.attrKeyList = response2.data.keyList
-          this.attrValList = response2.data.valList
-        })*/
       }
 
       if (this.active < 3) {
@@ -395,6 +385,36 @@ export default {
           type: 'error'
         })
       }
+    },
+    reset() {
+      this.listQuery.id = ''
+      this.fetchData()
+    },
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getList()
+    },
+    handleClose() {
+
+    },
+    fetchNext() {
+      this.listQuery.page = this.listQuery.page + 1
+      this.fetchData()
+    },
+    fetchPrev() {
+      this.listQuery.page = this.listQuery.page - 1
+      this.fetchData()
+    },
+    fetchPage(page) {
+      this.listQuery.page = page
+      this.fetchData()
+    },
+    changeSize(limit) {
+      this.listQuery.limit = limit
+      this.fetchData()
+    },
+    handleCurrentChange(currentRow, oldCurrentRow) {
+      this.selRow = currentRow
     },
     handleUploadGallerySuccess(response, raw) {
       if (response.code === 20000) {

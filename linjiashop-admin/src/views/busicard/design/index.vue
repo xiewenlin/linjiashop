@@ -109,7 +109,7 @@
 
 
 
-    <el-form ref="form" :model="form"  label-width="150px" v-show="active==1">
+    <el-form ref="form" :model="form" :rules="rules" label-width="150px" v-show="active==1">
       <el-row>
         <el-col :span="12">
           <el-form-item label="姓名"  >
