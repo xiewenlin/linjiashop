@@ -58,14 +58,14 @@ export default {
       ],
       form: {
         name:'谢文林',
-        company:'上海穆明信息科技有限公司',
-        phone:'18337936899',
-        email:'1186664388@qq.com',
-        address:'上海市闵行区申长路668号冠捷大厦G层',
+        company:'上海穆明信息科技有限公司',//
+        phone:'手机：18337936899',
+        email:'邮箱：1186664388@qq.com',
+        address:'地址：上海市闵行区申长路668号冠捷大厦G层',
         website:'https://busibetter.com',
         position:'高级开发经理',
         description:'几分钟制作一个网站，完全免费；在线极速制作名片，直接下单打印；企业融资贷款，省时省力；企业服务采购，满足多样性需求。',
-        qrcode:'https://i.loli.net/2020/10/10/zRfneiAgoPwxUD2.jpg',
+        qrcode:'https://i.loli.net/2020/10/20/4VAeoPcUNu3ynkq.png',
         memo:'这是备注内容，哈哈。',
         id:null
       },

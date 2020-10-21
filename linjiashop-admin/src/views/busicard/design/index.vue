@@ -186,7 +186,7 @@
     <div v-show="active==2">
         <!--下面显示已生成的名片预览图片-->
         <!--<el-image :src="imgUrl"></el-image>-->
-        <div class="display-flex">
+        <div class="display-flex" v-show="selRow.frontLocationStyle==1">
           <div ref="captureFront">
             <img :src="selRow.frontImageUrl" id="green_front" class="gwd-img-1ipa"><span class="gwd-span-18vz">{{form.company}}</span><span class="gwd-span-z6x2">{{form.name}}</span>
             <p class="gwd-span-1pxk">{{form.position}}</p><span class="gwd-span-bhnv">{{form.email}}</span><span class="gwd-span-1maf">{{form.phone}}</span><span class="gwd-span-7w50">{{form.address}}</span><span class="gwd-span-12za">{{form.website}}</span>
@@ -199,6 +199,20 @@
             <p class="gwd-p-1yzs">{{form.description}}</p>
           </div>
         </div>
+      <div class="display-flex" v-show="selRow.frontLocationStyle==2">
+        <div ref="captureFront" >
+          <img :src="selRow.frontImageUrl"  class="gwd-img-1ipa-2"><span class="gwd-span-z6x2-2">{{form.name}}</span>
+          <el-image :src="form.qrcode"  class="gwd-img-mt5w-2-2"></el-image>
+          <p class="gwd-span-1pxk-2">{{form.position}}</p><span class="gwd-span-bhnv-2">{{form.email}}</span><span class="gwd-span-1maf-2">{{form.phone}}</span><span class="gwd-span-7w50-2">{{form.address}}</span><span class="gwd-span-12za-2">{{form.website}}</span>
+        </div>
+        <div ref="captureBack" class="margin-set" >
+          <img :src="selRow.backImageUrl"  class="gwd-img-1ipa-2">
+          <el-image :src="form.qrcode"  class="gwd-img-mt5w-2"></el-image>
+          <p class="gwd-p-1k6l-2 gwd-p-xsa5-2">业务介绍</p>
+          <!--<p class="gwd-p-1k6l gwd-p-91fv">介绍</p>-->
+          <p class="gwd-p-1yzs-2">{{form.description}}</p>
+        </div>
+      </div>
         <br/>
         <div align="center">
           <el-button type="warning"  icon="el-icon-download" @click.native="downloadBusinessCard">{{ $t('button.download') }}</el-button>
@@ -539,5 +553,143 @@
     width: 30%;
   }
 
+  /*风格2样式*/
+  .gwd-img-mt5w-2 {
+    width: 120px;
+    height: 120px;
+    left: -78.8%;
+    top: -30%;
+  }
+  .gwd-img-mt5w-2-2 {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    left: 14.8%;
+    top: 37.5%;
+  }
+      .gwd-img-1ipa-2 {
+        position: relative;
+        top: 0%;
+        left: 0%;
+        bottom: 0%;
+        margin-bottom: -1%;
+        width: 443.99px;
+        height: 252.07px;
+      }
+  .gwd-span-18vz-2 {
+    position: absolute;
+    font-weight: bold;
+    color: $primary-front-color;
+    transform-origin: 50% 50% 0px;
+    left: 16%;
+    top: 38.84%;
+    font-size: 16px;
+    width: 198.25px;
+    height: 19.18px;
+  }
+  .gwd-span-z6x2-2 {
+    position: absolute;
+    -webkit-transform-origin: 50% 50% 0px;
+    transform-origin: 50% 50% 0px;
+    font-weight: bold;
+    color: $primary-front-color;
+    left: 25%;
+    top: 40.05%;
+    font-size: 23px;
+    width: 74.39px;
+    height: 27.6px;
+  }
+  .gwd-span-1pxk-2 {
+    position: absolute;
+    font-weight: bold;
+    font-size: 15px;
+    color: var(--primaryFrontColor, #3f938b);
+    width: 11%;
+    height: 4%;
+    left: 31.6%;
+    top: 39.05%;
+  }
+  .gwd-span-bhnv-2 {
+    position: absolute;
+    font-weight: bold;
+    color: $primary-front-color;
+    left: 34.9%;
+    top: 46.42%;
+    font-size: 13px;
+    width: 20%;
+    height: 0.27%;
+  }
+  .gwd-span-1maf-2 {
+    position: absolute;
+    -webkit-transform-origin: 50% 50% 0px;
+    transform-origin: 50% 50% 0px;
+    font-weight: bold;
+    color: var(--primaryFrontColor, #3f938b);
+    left: 24.9%;
+    top: 46.40%;
+    font-size: 13px;
+    width: 10.9%;
+    height: 2.01%;
+  }
+  .gwd-span-7w50-2 {
+    position: absolute;
+    transform-origin: 50% 50% 0px;
+    font-weight: bold;
+    color: $primary-front-color;
+    transform-style: preserve-3d;
+    left: 24.9%;
+    top: 50.5%;
+    font-size: 13px;
+    width: 21.59%;
+    height: 4.14%;
+  }
+  .gwd-span-12za-2 {
+    position: absolute;
+    -webkit-transform-origin: 50% 50% 0px;
+    transform-origin: 50% 50% 0px;
+    font-weight: bold;
+    color: $primary-front-color;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    left: 26.9%;
+    top: 60.5%;
+    font-size: 13px;
+    width: 17.13%;
+    height: 2.48%;
+  }
+
+
+  .gwd-p-1k6l-2 {
+    position: absolute;
+    height: 32px;
+    transform-origin: 50% 50% 0px;
+    width: 51px;
+    left: 214px;
+    top: 124px;
+    font-size: 22px;
+    font-weight: bold;
+    color: $primary-back-color;
+  }
+  .gwd-p-1yzs-2 {
+    position: absolute;
+    color: $primary-back-color;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: justify;
+    left: 62.7%;
+    top: 43%;
+    width: 28%;
+    transform-style: preserve-3d;
+    transform: translate3d(-7px, -2px, 0px) rotateZ(-0.845633deg);
+  }
+  /* .gwd-p-91fv {
+     top: 39.8%;
+     left: 70.5%;
+   }*/
+  .gwd-p-xsa5-2 {
+    top: 36.8%;
+    left: 62.2%;
+    width: 30%;
+  }
 </style>
 
