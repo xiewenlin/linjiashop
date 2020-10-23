@@ -9,6 +9,7 @@ import { saveAs } from 'file-saver';
 import $ from 'jquery'
 import { remove, getList ,save as saveTempMarket} from '@/api/busicard/tempMarket'
 import { save as saveBusinessCard} from '@/api/busicard/businessCard'
+import { getList as getDicList } from '@/api/system/dict'
 
 export default {
   components: {editorImage},
@@ -24,17 +25,22 @@ export default {
     return {
       tempList:[
       ],
+      dicList:[],
       listQuery: {
+        search:undefined,
         page: 1,
-        limit: 20,
-        id: undefined
+        limit: 10,
+        id: undefined,
+        name:'行业',
+        searchType:0
       },
+      total: 0,
       radio: '0',
       listLoading: true,
       selRow: {},
       textarea:"",
       stars:0,
-      search: "", //当前输入框的值
+      //search: "", //当前输入框的值
       isFocus: false, //是否聚焦
       hotSearchList: ["暂无热门搜索"], //热门搜索数据
       historySearchList: [], //历史搜索数据
@@ -98,10 +104,10 @@ export default {
       return this.languageTypeList[this.$store.getters.language]
     },
     isHistorySearch() {
-      return this.isFocus && !this.search;
+      return this.isFocus && !this.listQuery.search;
     },
     isSearchList() {
-      return this.isFocus && this.search;
+      return this.isFocus && this.listQuery.search;
     },
     isSearch() {
       return this.isFocus;
@@ -129,6 +135,7 @@ export default {
       this.idGoods = this.$route.query.id*/
       this.fetchData()
     },
+
     /*handleCurrentChange(currentRow, oldCurrentRow) {
       this.selRow = currentRow
     },*/
@@ -144,27 +151,52 @@ export default {
         document.getElementsByTagName('body')[0].style.setProperty('--primaryBackColor', item.backTextColor);
       },
       downloadBusinessCard(){
-      var imgUrlFront;
-      var imgUrlBack;
-      html2canvas(this.$refs.captureFront,{
-        scale: 3,//图片放大3倍,解决图片模糊问题
-        useCORS   : true,// 允许使用跨域图片
-        allowTaint: false// 不允许跨域图片污染画布
-      }).then(canvas => {
-        // 转成图片，生成图片地址
-        imgUrlFront = canvas.toDataURL("image/png");
-        //this.download(this.imgUrl,"名片正面")
-        html2canvas(this.$refs.captureBack,{
-          scale: 3,//图片放大3倍,解决图片模糊问题
-          useCORS   : true,// 允许使用跨域图片
-          allowTaint: false// 不允许跨域图片污染画布
-        }).then(canvas => {
-          // 转成图片，生成图片地址
-          imgUrlBack = canvas.toDataURL("image/png");
-          this.downloadZip(imgUrlFront,imgUrlBack);
-        });
-      });
+        var imgUrlFront;
+        var imgUrlBack;
+        //保存名片基本信息
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            saveBusinessCard({
+              name:this.form.name,
+              company:this.form.company,
+              phone:this.form.phone,
+              email:this.form.email,
+              address:this.form.address,
+              website:this.form.website,
+              position:this.form.position,
+              description:this.form.description,
+              qrcode:this.form.qrcode,
+              memo:this.form.memo,
+              templateId:this.selRow.id,
+              id:this.form.id
+            }).then(response => {
+              this.form.id=response.data.id;
+              //下载
+              //下载正反面名片压缩包
+              html2canvas(this.$refs.captureFront,{
+                scale: 3,//图片放大3倍,解决图片模糊问题
+                useCORS   : true,// 允许使用跨域图片
+                allowTaint: false// 不允许跨域图片污染画布
+              }).then(canvas => {
+                // 转成图片，生成图片地址
+                imgUrlFront = canvas.toDataURL("image/png");
+                //this.download(this.imgUrl,"名片正面")
+                html2canvas(this.$refs.captureBack,{
+                  scale: 3,//图片放大3倍,解决图片模糊问题
+                  useCORS   : true,// 允许使用跨域图片
+                  allowTaint: false// 不允许跨域图片污染画布
+                }).then(canvas => {
+                  // 转成图片，生成图片地址
+                  imgUrlBack = canvas.toDataURL("image/png");
+                  this.downloadZip(imgUrlFront,imgUrlBack);
+                });
+              });
 
+            })
+          } else {
+            return false
+          }
+        })
     },
     downloadZip (imgUrlFront,imgUrlBack) {
       var zip = new JSZip();
@@ -235,20 +267,27 @@ export default {
     enterSearchBoxHanlder() {
       clearTimeout(this.searchBoxTimeout);
     },
-    searchHandler() {
+    searchHandler(search,searchType) {
+        this.listQuery.searchType=searchType;
       //随机生成搜索历史tag式样
       let n = RandomUtil.getRandomNumber(0, 5);
       let exist =
         this.historySearchList.filter(value => {
-          return value.name == this.search;
+          return value.name == this.listQuery.search;
         }).length == 0
           ? false
           : true;
-      if (!exist) {
-        this.historySearchList.push({ name: this.search, type: this.types[n] });
+      if (!exist&&this.listQuery.search!=null&&this.listQuery.search!='undefined'&&this.listQuery.search!='') {
+        this.historySearchList.push({ name: this.listQuery.search, type: this.types[n] });
         Store.saveHistory(this.historySearchList);
       }
       this.history = this.historySearchList.length == 0 ? false : true;
+      if(search!=null||search!=''){
+        this.listQuery.search=search;
+      }
+      //调用查询模板方法
+      this.listQuery.page = 1
+      this.fetchData();
     },
     closeHandler(search) {
       this.historySearchList.splice(this.historySearchList.indexOf(search), 1);
@@ -267,8 +306,14 @@ export default {
         this.tempList = response.data.records
         this.listLoading = false
         this.total = response.data.total
-        //this.userid=response.data.filters[0].value
       })
+      //查询行业数据
+      getDicList(this.listQuery).then(response => {
+        var dicString = response.data[0].detail;
+        this.dicList=dicString.split(',');
+      }).catch(() => {
+      })
+
     },
     prev() {
       if (this.active > 0) {
@@ -276,7 +321,6 @@ export default {
       }
     },
     save() {
-
       if(this.active == 0 ){
         //操作说明：1.验证用户选择；2.保存用户数据并给待用的变量赋值
         if(this.radio=='0'){
@@ -289,7 +333,7 @@ export default {
 
       }
 
-      if(this.active==1){
+      if(this.active==3){
         //保存名片基本信息
         this.$refs['form'].validate((valid) => {
           if (valid) {
@@ -325,37 +369,7 @@ export default {
       })
       this.active++
       return
-      /*const content = this.getContent()
-      const gallery = this.getGallery()
-      if(this.spec === 'more'){
-        //如果商品配置多规格，则删除单规格配置
-        this.form.price =''
-        this.form.marketingPrice =''
-        this.form.stock = ''
-      }
-      goodsApi.save({
-        name: this.form.name,
-        pic: this.form.pic,
-        gallery: gallery,
-        idCategory: this.form.idCategory,
-        descript: this.form.descript,
-        detail: content,
-        stock: this.form.stock,
-        price: this.form.price,
-        isDelete: this.form.isDelete,
-        isOnSale: this.form.isOnSale,
-        id: this.idGoods,
-        isNew: this.form.isNew,
-        isHot:this.form.isHot
-      }).then(response => {
-        this.$message({
-          message: this.$t('common.optionSuccess'),
-          type: 'success'
-        })
-        this.$router.push('/goods')
-      })*/
     },
-
     getGallery() {
       let gallery = ''
       for (let i = 0; i < this.galleryList.length; i++) {

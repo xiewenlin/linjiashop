@@ -4,7 +4,7 @@
     <el-row>
       <el-col :span="24">
         <el-button type="primary" @click="prev" v-show="active>0" size="mini">上一步</el-button>
-        <el-button type="primary" @click="save" v-show="active!=3&&active!=4" size="mini">下一步</el-button>
+        <el-button type="primary" @click="save" v-show="active!=3&&active!=4&&active!=5" size="mini">下一步</el-button>
       </el-col>
     </el-row>
   </div>
@@ -28,13 +28,13 @@
           </el-col>
           <el-col :span="8" class="center">
             <el-input
-              v-model="search"
+              v-model="listQuery.search"
               @focus="focus"
               @blur="blur"
-              @keyup.enter.native="searchHandler"
+              @keyup.enter.native="searchHandler(listQuery.search,0)"
               placeholder="输入关键字搜索模板"
             >
-              <el-button slot="append"  icon="el-icon-search" id="search" @click="searchHandler"></el-button>
+              <el-button slot="append"  icon="el-icon-search" id="search" @click="searchHandler(null,0)"></el-button>
             </el-input>
             <!---设置z-index优先级,防止被走马灯效果遮挡-->
             <el-card
@@ -54,6 +54,7 @@
                   :key="search.id"
                   closable
                   :type="search.type"
+                  @click="searchHandler(search.name,0)"
                   @close="closeHandler(search)"
                   style="margin-right:5px; margin-bottom:5px;"
                 >{{search.name}}</el-tag>
@@ -67,18 +68,17 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8" class="center">
+          <el-col :span="24" class="center">
             所属行业：
-            <el-button type="text" class="el-button">全部</el-button>
-            <el-button type="text" class="el-button">人力资源</el-button>
-            <el-button type="text" class="el-button">互联网</el-button>
-            <el-button type="text" class="el-button">房地产</el-button>
-            <el-button type="text" class="el-button">餐饮</el-button>
+            <el-button type="text" class="el-button" :data="dicList" v-for="(item, index) in dicList" :key="item.id" @click="searchHandler(item.split(':')[1],1)">{{item.split(':')[1]}}</el-button>
           </el-col>
         </el-row>
       </div>
       <div>
-        <el-row>
+        <el-row v-show="total == 0">
+          <span style="color: #8c939d;">暂无数据</span>
+        </el-row>
+        <el-row v-show="total > 0">
           <el-col :span="8" :data="tempList" v-for="(item, index) in tempList" :key="item.id">
             <el-card :body-style="{ padding: '30px' }">
               <!--<i class="el-icon-s-opportunity">点击图片切换正反面</i>-->
@@ -103,6 +103,20 @@
               </div>
             </el-card><br>
           </el-col>
+        </el-row>
+        <el-row>
+          <el-pagination
+            background
+            layout="total, sizes, prev, pager, next, jumper"
+            :page-sizes="[10, 20, 50, 100,500]"
+            :page-size="listQuery.limit"
+            :total="total"
+            :current-page.sync="listQuery.page"
+            @size-change="changeSize"
+            @current-change="fetchPage"
+            @prev-click="fetchPrev"
+            @next-click="fetchNext">
+          </el-pagination>
         </el-row>
       </div>
     </div>
@@ -594,28 +608,28 @@
     font-weight: bold;
     color: $primary-front-color;
     left: 25%;
-    top: 40.05%;
-    font-size: 23px;
+    top: 41.6%;
+    font-size: 14px;
     width: 74.39px;
     height: 27.6px;
   }
   .gwd-span-1pxk-2 {
     position: absolute;
     font-weight: bold;
-    font-size: 15px;
-    color: var(--primaryFrontColor, #3f938b);
+    font-size: 8.7px;
+    color: $primary-front-color;
     width: 11%;
     height: 4%;
-    left: 31.6%;
-    top: 39.05%;
+    left: 29.6%;
+    top: 41.05%;
   }
   .gwd-span-bhnv-2 {
     position: absolute;
     font-weight: bold;
     color: $primary-front-color;
-    left: 34.9%;
-    top: 46.42%;
-    font-size: 13px;
+    left: 33.9%;
+    top: 45.9%;
+    font-size: 7.0px;
     width: 20%;
     height: 0.27%;
   }
@@ -624,10 +638,10 @@
     -webkit-transform-origin: 50% 50% 0px;
     transform-origin: 50% 50% 0px;
     font-weight: bold;
-    color: var(--primaryFrontColor, #3f938b);
+    color: $primary-front-color;
     left: 24.9%;
-    top: 46.40%;
-    font-size: 13px;
+    top: 45.9%;
+    font-size: 7.0px;
     width: 10.9%;
     height: 2.01%;
   }
@@ -638,8 +652,8 @@
     color: $primary-front-color;
     transform-style: preserve-3d;
     left: 24.9%;
-    top: 50.5%;
-    font-size: 13px;
+    top: 49.0%;
+    font-size: 7.0px;
     width: 21.59%;
     height: 4.14%;
   }
@@ -653,7 +667,7 @@
     transform-style: preserve-3d;
     left: 26.9%;
     top: 60.5%;
-    font-size: 13px;
+    font-size: 7.0px;
     width: 17.13%;
     height: 2.48%;
   }
@@ -666,29 +680,27 @@
     width: 51px;
     left: 214px;
     top: 124px;
-    font-size: 22px;
+    font-size: 14px;
     font-weight: bold;
     color: $primary-back-color;
   }
   .gwd-p-1yzs-2 {
     position: absolute;
     color: $primary-back-color;
+    transform-origin: 50% 50% 0px;
     font-weight: bold;
-    font-size: 16px;
-    text-align: justify;
-    left: 62.7%;
+    font-size: 7.0px;
+    left: 61.2%;
     top: 43%;
     width: 28%;
-    transform-style: preserve-3d;
-    transform: translate3d(-7px, -2px, 0px) rotateZ(-0.845633deg);
   }
   /* .gwd-p-91fv {
      top: 39.8%;
      left: 70.5%;
    }*/
   .gwd-p-xsa5-2 {
-    top: 36.8%;
-    left: 62.2%;
+    top: 38.2%;
+    left: 61.2%;
     width: 30%;
   }
 </style>

@@ -3,6 +3,7 @@ import html2canvas from 'html2canvas'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver';
 import $ from 'jquery'
+import { get } from '@/api/busicard/tempMarket'
 
 
 export default {
@@ -14,6 +15,7 @@ export default {
       formTitle: '添加名片设计',
       isAdd: true,
       userid:'',
+      selTempRow:{},
       form: {
         name:'',
         company:'',
@@ -282,6 +284,13 @@ export default {
     },
     printer() {
       if (this.checkSel()) {
+        //查询模板信息
+        get(this.selRow.templateId).then(response => {
+          this.selTempRow = response.data;
+          document.getElementsByTagName('body')[0].style.setProperty('--primaryFrontColor', this.selTempRow.frontTextColor);
+          document.getElementsByTagName('body')[0].style.setProperty('--primaryBackColor', this.selTempRow.backTextColor);
+        })
+
       this.form = this.selRow
       this.printerVisible = true
       }
