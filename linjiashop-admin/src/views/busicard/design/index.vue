@@ -314,7 +314,6 @@
 
   </div>
 </template>
-
 <script src="./design.js"></script>
 
 <style>
