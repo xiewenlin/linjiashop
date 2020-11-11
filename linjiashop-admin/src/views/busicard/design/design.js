@@ -10,9 +10,10 @@ import $ from 'jquery'
 import { remove, getList ,save as saveTempMarket} from '@/api/busicard/tempMarket'
 import { save as saveBusinessCard} from '@/api/busicard/businessCard'
 import { getList as getDicList } from '@/api/system/dict'
+import VabImage from '@/components/VabImage'
 
 export default {
-  components: {editorImage},
+  components: {editorImage,VabImage},
   props: {
     id: {
       type: String,
@@ -71,9 +72,56 @@ export default {
         website:'https://busibetter.com',
         position:'高级开发经理',
         description:'几分钟制作一个网站，完全免费；在线极速制作名片，直接下单打印；企业融资贷款，省时省力；企业服务采购，满足多样性需求。',
-        qrcode:'https://i.loli.net/2020/10/20/4VAeoPcUNu3ynkq.png',
+        qrcode:'https://i.loli.net/2020/10/10/zRfneiAgoPwxUD2.jpg',
         memo:'这是备注内容，哈哈。',
-        id:null
+        id:null,
+        logo:'https://i.loli.net/2020/10/20/4VAeoPcUNu3ynkq.png'
+      },
+      rules:{
+        name: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' },
+          { min: 2, max: 20, message: '姓名长度必须在2到20个字符以内', trigger: 'blur' }
+        ],
+        company:[
+          { required: true, message: '公司名称不能为空', trigger: 'blur' },
+          { min: 2, max: 100, message: '公司名称长度必须在2到100个字符以内', trigger: 'blur' }
+        ],
+        phone:[
+          { required: true, message: '电话不能为空', trigger: 'blur' },
+          { min: 1, max: 20, message: '姓名长度必须在2到20个字符以内', trigger: 'blur' }
+        ],
+        email:[
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          { min: 2, max: 50, message: '邮箱长度必须在2到50个字符以内', trigger: 'blur' }
+        ],
+        address:[
+          { required: false, message: '地址不能为空', trigger: 'blur' },
+          { min: 2, max: 200, message: '地址长度必须在2到200个字符以内', trigger: 'blur' }
+        ],
+        website:[
+          { required: false, message: '网址不能为空', trigger: 'blur' },
+          { min: 2, max: 200, message: '网址长度必须在2到200个字符以内', trigger: 'blur' }
+        ],
+        position:[
+          { required: false, message: '职位不能为空', trigger: 'blur' },
+          { min: 2, max: 50, message: '职位长度必须在2到50个字符以内', trigger: 'blur' }
+        ],
+        description:[
+          { required: false, message: '业务介绍', trigger: 'blur' },
+          { min: 1, max: 500, message: '业务介绍长度必须在1到500个字符以内', trigger: 'blur' }
+        ],
+        qrcode:[
+          { required: false, message: '二维码不能为空', trigger: 'blur' },
+          { min: 1, max: 500, message: '二维码长度必须在1到500个字符以内', trigger: 'blur' }
+        ],
+        memo:[
+          { required: false, message: '备注不能为空', trigger: 'blur' },
+          { min: 2, max: 200, message: '备注长度必须在2到200个字符以内', trigger: 'blur' }
+        ],
+        logo:[
+          { required: false, message: 'LOGO不能为空', trigger: 'blur' },
+          { min: 2, max: 500, message: 'LOGO长度必须在2到500个字符以内', trigger: 'blur' }
+        ]
       },
       orderForm: {
         number:200,
@@ -168,7 +216,8 @@ export default {
               qrcode:this.form.qrcode,
               memo:this.form.memo,
               templateId:this.selRow.id,
-              id:this.form.id
+              id:this.form.id,
+              logo:this.form.logo
             }).then(response => {
               this.form.id=response.data.id;
               //下载
@@ -188,6 +237,13 @@ export default {
                 }).then(canvas => {
                   // 转成图片，生成图片地址
                   imgUrlBack = canvas.toDataURL("image/png");
+                  if(imgUrlFront=='data:,'||imgUrlBack=='data:,'){
+                    this.$notify.error({
+                      title: '下载出错啦',
+                      message: '图片生成失败，请联系客服！'
+                    })
+                    return;
+                  }
                   this.downloadZip(imgUrlFront,imgUrlBack);
                 });
               });
@@ -360,7 +416,16 @@ export default {
       }
 
       if (this.active < 3) {
-        this.active++
+        console.log(1)
+        this.$refs['form'].validate((valid) => {
+          console.log(2)
+            if (valid) {
+              console.log(3)
+              this.active++
+            }else {
+              return false
+            }
+        })
         return
       }
       this.$message({

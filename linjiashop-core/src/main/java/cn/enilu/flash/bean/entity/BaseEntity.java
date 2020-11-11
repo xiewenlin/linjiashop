@@ -3,6 +3,7 @@ package cn.enilu.flash.bean.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -30,7 +31,7 @@ public abstract class BaseEntity implements Serializable {
     @GeneratedValue
     private Long id;
     @CreationTimestamp
-    @Column(name = "create_time",columnDefinition="DATETIME COMMENT '创建时间/注册时间'")
+    @Column(updatable = false,name = "create_time",columnDefinition="DATETIME COMMENT '创建时间/注册时间'")
     private Date createTime;
     @Column(name = "create_by",columnDefinition="bigint COMMENT '创建人'")
     @CreatedBy

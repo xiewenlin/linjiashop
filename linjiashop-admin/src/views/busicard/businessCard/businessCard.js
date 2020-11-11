@@ -28,7 +28,9 @@ export default {
         qrcode:'',
         memo:'',
         userid:'',
-        id: ''
+        id: '',
+        templateId:'',
+        logo:''
       },
       listQuery: {
         page: 1,
@@ -38,7 +40,53 @@ export default {
       total: 0,
       list: null,
       listLoading: true,
-      selRow: {}
+      selRow: {},
+      rules:{
+        name: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' },
+          { min: 2, max: 20, message: '姓名长度必须在2到20个字符以内', trigger: 'blur' }
+        ],
+        company:[
+          { required: true, message: '公司名称不能为空', trigger: 'blur' },
+          { min: 2, max: 100, message: '公司名称长度必须在2到100个字符以内', trigger: 'blur' }
+        ],
+        phone:[
+          { required: true, message: '电话不能为空', trigger: 'blur' },
+          { min: 1, max: 20, message: '姓名长度必须在2到20个字符以内', trigger: 'blur' }
+        ],
+        email:[
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          { min: 2, max: 50, message: '邮箱长度必须在2到50个字符以内', trigger: 'blur' }
+        ],
+        address:[
+          { required: false, message: '地址不能为空', trigger: 'blur' },
+          { min: 2, max: 200, message: '地址长度必须在2到200个字符以内', trigger: 'blur' }
+        ],
+        website:[
+          { required: false, message: '网址不能为空', trigger: 'blur' },
+          { min: 2, max: 200, message: '网址长度必须在2到200个字符以内', trigger: 'blur' }
+        ],
+        position:[
+          { required: false, message: '职位不能为空', trigger: 'blur' },
+          { min: 2, max: 50, message: '职位长度必须在2到50个字符以内', trigger: 'blur' }
+        ],
+        description:[
+          { required: false, message: '业务介绍', trigger: 'blur' },
+          { min: 1, max: 500, message: '业务介绍长度必须在1到500个字符以内', trigger: 'blur' }
+        ],
+        qrcode:[
+          { required: false, message: '二维码不能为空', trigger: 'blur' },
+          { min: 1, max: 500, message: '二维码长度必须在1到500个字符以内', trigger: 'blur' }
+        ],
+        memo:[
+          { required: false, message: '备注不能为空', trigger: 'blur' },
+          { min: 2, max: 200, message: '备注长度必须在2到200个字符以内', trigger: 'blur' }
+        ],
+        logo:[
+          { required: false, message: 'LOGO不能为空', trigger: 'blur' },
+          { min: 2, max: 500, message: 'LOGO长度必须在2到500个字符以内', trigger: 'blur' }
+        ]
+      }
     }
   },
   filters: {
@@ -53,14 +101,14 @@ export default {
   },
   computed: {
     //表单验证
-    rules() {
+/*    rules() {
       return {
-        // cfgName: [
-        //   { required: true, message: this.$t('config.name') + this.$t('common.isRequired'), trigger: 'blur' },
-        //   { min: 3, max: 2000, message: this.$t('config.name') + this.$t('config.lengthValidation'), trigger: 'blur' }
-        // ]
+        name: [
+          { required: true, message: '姓名不能为空呀', trigger: 'blur' },
+          { min: 2, max: 20, message: '姓名长度必须在2到20个字符以内', trigger: 'blur' }
+        ]
       }
-    }
+    }*/
   },
   created() {
     this.init()
@@ -125,7 +173,9 @@ export default {
         qrcode:'',
         memo:'',
         userid:'',
-        id: ''
+        id: '',
+        templateId:'',
+        logo:''
       }
     },
     add() {
@@ -136,7 +186,7 @@ export default {
       this.isAdd = true
     },
     save() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(async (valid) => {
         if (valid) {
           save({
       name:this.form.name,
@@ -150,7 +200,9 @@ export default {
       qrcode:this.form.qrcode,
       memo:this.form.memo,
       userid:this.form.userid,
-            id: this.form.id
+      id: this.form.id,
+      templateId:this.form.templateId,
+      logo:this.form.logo
           }).then(response => {
             this.$message({
               message: this.$t('common.optionSuccess'),
@@ -200,6 +252,13 @@ export default {
         }).then(canvas => {
           // 转成图片，生成图片地址
           imgUrlBack = canvas.toDataURL("image/png");
+          if(imgUrlFront=='data:,'||imgUrlBack=='data:,'){
+            this.$notify.error({
+              title: '下载出错啦',
+              message: '图片生成失败，请联系客服！'
+            })
+            return;
+          }
           this.downloadZip(imgUrlFront,imgUrlBack);
         });
       });

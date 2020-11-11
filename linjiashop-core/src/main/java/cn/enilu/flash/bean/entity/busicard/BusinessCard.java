@@ -2,10 +2,15 @@ package cn.enilu.flash.bean.entity.busicard;
 
 import cn.enilu.flash.bean.entity.BaseEntity;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Table;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 
 /**
  * @description:

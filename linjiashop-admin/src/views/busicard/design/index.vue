@@ -74,50 +74,62 @@
           </el-col>
         </el-row>
       </div>
-      <div>
+      <div class="card-container">
         <el-row v-show="total == 0">
           <span style="color: #8c939d;">暂无数据</span>
         </el-row>
-        <el-row v-show="total > 0">
-          <el-col :span="8" :data="tempList" v-for="(item, index) in tempList" :key="item.id">
-            <el-card :body-style="{ padding: '30px' }">
-              <!--<i class="el-icon-s-opportunity">点击图片切换正反面</i>-->
-               <img @click="item.srcFlag=!item.srcFlag" :src="item.srcFlag?item.preFrontImageUrl:item.preBackImageUrl"  class="image">
-              <div style="padding: 10px;">
-                <span>{{item.tempName}}</span>
+        <el-row :gutter="20">
+          <el-col
+            v-for="(item, index) in tempList"
+            :key="index"
+            :xs="24"
+            :sm="8"
+            :md="8"
+            :lg="8"
+            :xl="4"
+          >
+            <el-card shadow="hover">
+              <div slot="header">
+                <span>{{ item.tempName }}</span>
+              </div>
+              <div style="width: 100%; height: 200px">
+                <vab-image
+                  :big-src="item.srcFlag?item.preFrontImageUrl:item.preBackImageUrl"
+                  @click="item.srcFlag=!item.srcFlag"
+                  :percent="item.stars"
+                  :small-src="item.srcFlag?item.preFrontImageUrl:item.preBackImageUrl"
+                ></vab-image>
                 <div class="bottom clearfix">
                   <el-row>
                     <template>
-                    <el-col :span="18"><time class="time">{{item.tempDesc}}</time>
-                      <el-rate
-                        v-model="item.stars"
-                        disabled
-                        show-score
-                        text-color="#ff9900"
-                      >
-                      </el-rate></el-col><!--@click="radioOption(item.radio,index)"-->
-                    <el-col :span="6"><el-radio @click.native="radioOption(item)"  v-model="radio" :label="item.id">请选择</el-radio></el-col>
+                      <el-col :span="18"><time class="time">{{item.tempDesc}}</time>
+                        <el-rate
+                          v-model="item.stars"
+                          disabled
+                          show-score
+                          text-color="#ff9900"
+                        >
+                        </el-rate></el-col><!--@click="radioOption(item.radio,index)"-->
+                      <el-col :span="6"><el-radio @click.native="radioOption(item)"  v-model="radio" :label="item.id">请选择</el-radio></el-col>
                     </template>
                   </el-row>
                 </div>
               </div>
-            </el-card><br>
+            </el-card>
           </el-col>
         </el-row>
-        <el-row>
-          <el-pagination
-            background
-            layout="total, sizes, prev, pager, next, jumper"
-            :page-sizes="[10, 20, 50, 100,500]"
-            :page-size="listQuery.limit"
-            :total="total"
-            :current-page.sync="listQuery.page"
-            @size-change="changeSize"
-            @current-change="fetchPage"
-            @prev-click="fetchPrev"
-            @next-click="fetchNext">
-          </el-pagination>
-        </el-row>
+        <el-pagination
+          background
+          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[10, 20, 50, 100,500]"
+          :page-size="listQuery.limit"
+          :total="total"
+          :current-page.sync="listQuery.page"
+          @size-change="changeSize"
+          @current-change="fetchPage"
+          @prev-click="fetchPrev"
+          @next-click="fetchNext">
+        </el-pagination>
       </div>
     </div>
 
@@ -125,75 +137,62 @@
 
     <el-form ref="form" :model="form" :rules="rules" label-width="150px" v-show="active==1">
       <el-row>
-        <el-col :span="12">
-          <el-form-item label="姓名"  >
-            <el-input v-model="form.name" minlength=1></el-input>
+        <el-col :span="12" >
+          <el-form-item label="姓名"  prop="name">
+            <el-input v-model.trim="form.name"  minlength=1></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="公司名称"  >
-            <el-input v-model="form.company" minlength=1></el-input>
+          <el-form-item label="公司名称" prop="company" style="margin-bottom: 20px" >
+            <el-input v-model.trim="form.company" minlength=1></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="电话"  >
-            <el-input v-model="form.phone" minlength=1></el-input>
+          <el-form-item label="电话" prop="phone" >
+            <el-input v-model.trim="form.phone" minlength=1></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="邮箱"  >
-            <el-input v-model="form.email" minlength=1></el-input>
+          <el-form-item label="邮箱" prop="email" style="margin-bottom: 20px">
+            <el-input v-model.trim="form.email" minlength=1></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="地址"  >
-            <el-input v-model="form.address" minlength=1></el-input>
+          <el-form-item label="地址"  prop="address">
+            <el-input v-model.trim="form.address" minlength=1></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="网址"  >
-            <el-input v-model="form.website" minlength=1></el-input>
+          <el-form-item label="网址" prop="website" style="margin-bottom: 20px">
+            <el-input v-model.trim="form.website" minlength=1></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="职位"  >
-            <el-input v-model="form.position" minlength=1></el-input>
+          <el-form-item label="职位"  prop="position">
+            <el-input v-model.trim="form.position" minlength=1></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="我能提供的价值"  >
-            <el-input v-model="form.description" minlength=1></el-input>
+          <el-form-item label="业务介绍" prop="description" style="margin-bottom: 20px">
+            <el-input v-model.trim="form.description" minlength=1></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="二维码"  >
-            <el-input v-model="form.qrcode" minlength=1></el-input>
+          <el-form-item label="二维码" prop="qrcode" >
+            <el-input v-model.trim="form.qrcode" minlength=1></el-input>
           </el-form-item>
         </el-col>
-       <!-- <el-col :span="24">
-          <el-form-item label="二维码">
-            <el-upload
-              :headers="uploadHeaders"
-              :action="uploadUrl"
-              :show-file-list="false"
-              :on-success="handleUploadPicSuccess"
-              class="avatar-uploader"
-              accept=".jpg,.jpeg,.png,.gif">
-              <img v-if="form.pic" :src="apiUrl+ '/file/getImgStream?idFile=' +form.pic" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"/>
-            </el-upload>
-          </el-form-item>
-        </el-col>-->
         <el-col :span="12">
-          <el-form-item label="备注"  >
-            <el-input v-model="form.memo" minlength=1 value="这是备注内容，哈哈哈哈"></el-input>
+          <el-form-item label="LOGO" prop="logo" >
+            <el-input v-model.trim="form.logo" minlength=1></el-input>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="12">
-             <el-form-item label="用户ID"  >
-                 <el-input v-model="form.userid" minlength=1></el-input>
-             </el-form-item>
-         </el-col>-->
+        <el-col :span="12">
+          <el-form-item label="备注" prop="memo" >
+
+            <el-input v-model.trim="form.memo" minlength=1></el-input>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
 
@@ -216,12 +215,12 @@
       <div class="display-flex" v-show="selRow.frontLocationStyle==2">
         <div ref="captureFront" >
           <img :src="selRow.frontImageUrl"  class="gwd-img-1ipa-2"><span class="gwd-span-z6x2-2">{{form.name}}</span>
-          <el-image :src="form.qrcode"  class="gwd-img-mt5w-2-2"></el-image>
+          <el-image :src="form.logo"  class="gwd-img-mt5w-2-2"></el-image>
           <p class="gwd-span-1pxk-2">{{form.position}}</p><span class="gwd-span-bhnv-2">{{form.email}}</span><span class="gwd-span-1maf-2">{{form.phone}}</span><span class="gwd-span-7w50-2">{{form.address}}</span><span class="gwd-span-12za-2">{{form.website}}</span>
         </div>
         <div ref="captureBack" class="margin-set" >
           <img :src="selRow.backImageUrl"  class="gwd-img-1ipa-2">
-          <el-image :src="form.qrcode"  class="gwd-img-mt5w-2"></el-image>
+          <el-image :src="form.logo"  class="gwd-img-mt5w-2"></el-image>
           <p class="gwd-p-1k6l-2 gwd-p-xsa5-2">业务介绍</p>
           <!--<p class="gwd-p-1k6l gwd-p-91fv">介绍</p>-->
           <p class="gwd-p-1yzs-2">{{form.description}}</p>

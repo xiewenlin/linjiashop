@@ -85,57 +85,63 @@
         <el-dialog
                 :title="formTitle"
                 :visible.sync="formVisible"
-                width="70%">
-            <el-form ref="form" :model="form" :rules="rules" label-width="150px">
+                width="70%" hight="100%">
+            <el-form ref="form" :model="form" :rules="rules" label-width="150px" >
                 <el-row>
-                    <el-col :span="12">
-                        <el-form-item label="姓名"  >
-                            <el-input v-model="form.name" minlength=1></el-input>
+                    <el-col :span="12" >
+                        <el-form-item label="姓名"  prop="name">
+                            <el-input v-model.trim="form.name"  minlength=1></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="公司名称"  >
-                            <el-input v-model="form.company" minlength=1></el-input>
+                        <el-form-item label="公司名称" prop="company" style="margin-bottom: 20px" >
+                            <el-input v-model.trim="form.company" minlength=1></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="电话"  >
-                            <el-input v-model="form.phone" minlength=1></el-input>
+                        <el-form-item label="电话" prop="phone" >
+                            <el-input v-model.trim="form.phone" minlength=1></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="邮箱"  >
-                            <el-input v-model="form.email" minlength=1></el-input>
+                        <el-form-item label="邮箱" prop="email" style="margin-bottom: 20px">
+                            <el-input v-model.trim="form.email" minlength=1></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="地址"  >
-                            <el-input v-model="form.address" minlength=1></el-input>
+                        <el-form-item label="地址"  prop="address">
+                            <el-input v-model.trim="form.address" minlength=1></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="网址"  >
-                            <el-input v-model="form.website" minlength=1></el-input>
+                        <el-form-item label="网址" prop="website" style="margin-bottom: 20px">
+                            <el-input v-model.trim="form.website" minlength=1></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="职位"  >
-                            <el-input v-model="form.position" minlength=1></el-input>
+                        <el-form-item label="职位"  prop="position">
+                            <el-input v-model.trim="form.position" minlength=1></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="我能提供的价值"  >
-                            <el-input v-model="form.description" minlength=1></el-input>
+                        <el-form-item label="业务介绍" prop="description" style="margin-bottom: 20px">
+                            <el-input v-model.trim="form.description" minlength=1></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="二维码"  >
-                            <el-input v-model="form.qrcode" minlength=1></el-input>
+                        <el-form-item label="二维码" prop="qrcode" >
+                            <el-input v-model.trim="form.qrcode" minlength=1></el-input>
                         </el-form-item>
                     </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="LOGO" prop="logo" >
+                      <el-input v-model.trim="form.logo" minlength=1></el-input>
+                    </el-form-item>
+                  </el-col>
                     <el-col :span="12">
-                        <el-form-item label="备注"  >
-                            <el-input v-model="form.memo" minlength=1></el-input>
+                        <el-form-item label="备注" prop="memo" >
+
+                            <el-input v-model.trim="form.memo" minlength=1></el-input>
                         </el-form-item>
                     </el-col>
                    <!-- <el-col :span="12">
